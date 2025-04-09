@@ -1,1 +1,14 @@
+# base imports such as flask, wtf froms etc
 
+
+
+
+# file name imports and rendertemplates
+
+# JSON and API link for said paths
+
+
+# user inputs such as type,generation and pokemon name
+
+
+# other misc elemanets and code
