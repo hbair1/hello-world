@@ -1,5 +1,10 @@
 # base imports such as flask, wtf froms etc
+import requests, json 
+from flask import Flask, render_template
+from flask_bootstrap import Bootstrap 5
 
+app = Flask(_name_)
+bootstrap = Bootstrap5(app)
 
 
 
