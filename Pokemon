@@ -9,7 +9,6 @@ bootstrap = Bootstrap5(app)
 @app.route('/', methods=['GET', 'POST'])
 def index():
    # get the list of Pokémon by generation and type
-   # documentation at https://pokeapi.co/docs/v2
 
    if request.method == 'POST':
       # get region input from the User
