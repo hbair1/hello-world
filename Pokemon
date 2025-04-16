@@ -6,14 +6,47 @@ from flask_bootstrap import Bootstrap 5
 app = Flask(_name_)
 bootstrap = Bootstrap5(app)
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+   # get the list of Pokémon by generation and type
+   # documentation at https://pokeapi.co/docs/v2
 
+   if request.method == 'POST':
+      # get region input from the User
+      region = request.form.get('region')
+      # gets any generation that the user wants
+      generation = request.form.get('generation')
+      # get Pokémon type input (Fire...Water... etc)
+      pokemon_type = request.form.get('pokemon_type').lower()
 
-# file name imports and rendertemplates
+      # This gets the generation from the API that we are using
+      response = requests.get(f"https://pokeapi.co/api/v2/generation/{generation}/")
+      # check if the response status is equal to 200
+      if response.status_code==200:
+         data = response.json()
+         # get main region name from JSON
+         main_region = data.get('main_region', {}).get('name', 'Unknown')
+         # get species list from JSON
+         gen_species = {item['name'] for item in data.get('pokemon_species', [])}
 
-# JSON and API link for said paths
+         # get Pokemon type data that is needed
+         response = requests.get(f"https://pokeapi.co/api/v2/type/{pokemon_type}/")
+         # check if the response status is equal to 200
+         if response.status_code==200:
+            data = response.json()
+            # get Pokémon list from JSON
+            type_pokemons = {p['pokemon']['name'] for p in data.get('pokemon', [])}
 
+            # This limits it to 50 of the first Pokemon so the list isnt too long. 
+            pokemons = sorted(gen_species & type_pokemons)[:50]
+            # render template
+            return render_template('index.html', region=region, generation=generation, pokemon_type=pokemon_type.title(), main_region=main_region, pokemons=pokemons)
+      else:
+         # problem with the Web site
+         return render_template('error.html', status_code=response.status_code)
 
-# user inputs such as type,generation and pokemon name
+   # render form
+   return render_template('index.html')
 
-
-# other misc elemanets and code
+if __name__=='__main__':
+   app.run(debug=True)
